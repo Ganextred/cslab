@@ -16,6 +16,8 @@ typedef struct {
 bool canAcceptW0(int state, Automaton M, const int *w0, int nw0) {
     int currentState = state;
     for (int i = 0; i < nw0; i++) {
+        if (w0[i] > M.nalphabet)
+            return false;
         currentState = M.transitions[currentState][w0[i]];
         if (currentState == -1)
             return false;
