@@ -21,8 +21,8 @@ bool canAcceptW0(int state, Automaton M, const int *w0, int nw0) {
             return false;
     }
 
-    for (int i = 0; i < M.nfstates; i++) {
-        if (M.fstates[i] == currentState)
+    for (int j = 0; j < M.nfstates; j++) {
+        if (M.fstates[j] == currentState)
             return true;
     }
 
@@ -34,10 +34,12 @@ bool isReachable(int state, Automaton M, bool visited[]) {
         return true;
     visited[state] = true;
     for (int i = 0; i < M.nalphabet; i++) {
-        int nextState = M.transitions[state][i];
-        if (!visited[nextState] && nextState != -1) {
-            if (isReachable(nextState, M, visited)) {
-                return true;
+        for ( int j = 0; j < M.nstates; j++) {
+            int nextState = M.transitions[j][i];
+            if (!visited[j] && nextState == state) {
+                if (isReachable(j, M, visited)) {
+                    return true;
+                }
             }
         }
     }
@@ -46,6 +48,7 @@ bool isReachable(int state, Automaton M, bool visited[]) {
 
 bool check_automaton(Automaton M, const int *w0, int nw0) {
     for (int i = 0; i < M.nstates; i++) {
+        bool* visited = (bool *) malloc(M.nstates * sizeof(int *));
         if (canAcceptW0(i, M, w0, nw0) && isReachable(i, M, (bool[]) {0})) {
             return true;
         }
